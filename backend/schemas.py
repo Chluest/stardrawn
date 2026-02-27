@@ -20,6 +20,6 @@ class EntryResponse(BaseModel):
 class RoomResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: str
-    room_name: str
+    room_name: str | None = None
     timestamp: datetime
     entries: list[EntryResponse] = []

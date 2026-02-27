@@ -3,6 +3,7 @@ from schemas import RoomCreate, RoomResponse
 from database import engine, Base, get_db, SessionLocal
 from models import Room, Entry
 from connection_manager import ConnectionManager
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 import secrets
 import json
@@ -10,6 +11,14 @@ import json
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 manager = ConnectionManager()
 
 @app.get("/")
@@ -17,9 +26,10 @@ def read_root():
     return {"message": "stardrawn backend is alive!"}
 
 @app.post("/rooms", response_model = RoomResponse)
-def create_room(room: RoomCreate, db = Depends(get_db)):
+def create_room(room: RoomCreate | None = None, db = Depends(get_db)):
     room_id = secrets.token_urlsafe(8)
-    new_room = Room(id = room_id, room_name = room.room_name)
+    room_name = room.room_name if room else None
+    new_room = Room(id = room_id, room_name = room_name)
     db.add(new_room)
     db.commit()
     db.refresh(new_room)
