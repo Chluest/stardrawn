@@ -58,7 +58,7 @@ function Home() {
     }
     return (
         <div className="home">
-            <h1 className="home-logo">✦ Stardrawn</h1>
+            <h1 className="home-logo">✦ stardrawn ✦</h1>
             <p className="home-tagline">Let the stars decide</p>
 
             <div className="home-card">
