@@ -99,43 +99,77 @@ function Room() {
             }
         }
     }, [roomId]);
+    
+    if (loading) {
+        return (
+            <div className="room-status">
+                <p>Loading room...</p>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="room-status">
+                <p className="room-error">{error}</p>
+                <button className="btn-home" onClick={handleHome}>← Back to Home</button>
+            </div>
+        )
+    }
+
     return (
-        <div className = "container">
-            {loading && <p>Loading...</p>}
-        
-            {error &&(
-                <div>
-                    <button onClick = {handleHome}>Home</button>
-                    <p>{error}</p> 
+        <div className="room">
+            <nav className="room-nav">
+                <button className="btn-home" onClick={handleHome}>← Home</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    {copyMessage && <span className="copy-message">{copyMessage}</span>}
+                    <button className="btn-share" onClick={handleShare}>⬡ Share</button>
                 </div>
-            )}
-            
-            {!loading && !error && (
-                <div>
-                    <button onClick = {handleHome}>Home</button>
-                    <button onClick = {handleShare}>Share URL</button>
-                    {copyMessage && <div>{copyMessage}</div>}
-                    <h1>{room?.room_name || "Stardrawn"}</h1>
+            </nav>
+
+            <h1 className="room-title">{room?.room_name || "Stardrawn"}</h1>
+            <p className="room-subtitle">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
+
+            {entries.length === 0 ? (
+                <div className="entries-empty">
+                    No entries yet — add something below
+                </div>
+            ) : (
+                <div className="entries-list">
                     {entries.map(entry => (
-                        <div key={entry.id}>
-                            <p>{entry.value}</p>
-                            <button onClick={() => handleDelete(entry.id)}>🗑️</button>
+                        <div className="entry-item" key={entry.id}>
+                            <span className="entry-value">{entry.value}</span>
+                            <button className="btn-delete" onClick={() => handleDelete(entry.id)}>✕</button>
                         </div>
                     ))}
-                    <input
-                        type="text"
-                        value={newEntry}
-                        onChange={(e) => setNewEntry(e.target.value)}
-                        placeholder="Add Entry"
-                    />
-                    <button onClick={handleAdd}>add</button>
-                    <button onClick={handlePick}>random</button>
-                    {result && (
-                        <div>
-                            <h2>Result: {result.value}</h2>
-                            <button onClick={() => setResult(null)}>back</button>
-                        </div>
-                    )}
+                </div>
+            )}
+
+            <div className="add-row">
+                <input
+                    className="add-input"
+                    type="text"
+                    value={newEntry}
+                    onChange={(e) => setNewEntry(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                    placeholder="Add an entry..."
+                />
+                <button className="btn-add" onClick={handleAdd}>Add</button>
+            </div>
+
+            <button
+                className="btn-pick"
+                onClick={handlePick}
+                disabled={entries.length === 0}
+            >
+                ✦ Draw from the Stars
+            </button>
+
+            {result && (
+                <div className="result-overlay">
+                    <p className="result-label">✦ The stars have chosen</p>
+                    <h2 className="result-value">{result.value}</h2>
+                    <button className="btn-back" onClick={() => setResult(null)}>← Back</button>
                 </div>
             )}
         </div>

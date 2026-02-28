@@ -57,32 +57,61 @@ function Home() {
         navigate(`/rooms/${roomId.trim()}`);
     }
     return (
-        <div className = "container">
-            <button onClick = {handleSolo}>Solo</button>
-            <button onClick = {handleGetRoomName}>Create Room</button>
-            <input
-                type = "text"
-                value = {roomId}
-                onChange = {(e) => setRoomId(e.target.value)}
-                placeholder = "Enter Room Id"
-            />
-            {joinError && <p className = "error">{joinError}</p>}
-            <button onClick = {handleJoinRoom}>Join Room</button>
+        <div className="home">
+            <h1 className="home-logo">✦ Stardrawn</h1>
+            <p className="home-tagline">Let the stars decide</p>
+
+            <div className="home-card">
+                <button className="btn-solo" onClick={handleSolo}>
+                    Solo — Quick Pick
+                </button>
+
+                <button className="btn-create" onClick={handleGetRoomName}>
+                    Create a Room
+                </button>
+
+                <div className="home-divider">or join</div>
+
+                <div className="join-row">
+                    <input
+                        className="join-input"
+                        type="text"
+                        value={roomId}
+                        onChange={(e) => setRoomId(e.target.value)}
+                        placeholder="Enter Room ID"
+                        onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
+                    />
+                    <button className="btn-join" onClick={handleJoinRoom}>
+                        Join →
+                    </button>
+                </div>
+                {joinError && <p className="join-error">{joinError}</p>}
+            </div>
+
             {showModal && (
                 <div className="overlay">
                     <div className="modal">
-                        <input
-                            type = "text"
-                            value = {roomName}
-                            onChange = {(e) => setRoomName(e.target.value)}
-                            placeholder = "Room Name (Optional)"
-                        />
-                        <button onClick={handleCreateRoom}>→</button>
+                        <h2>Name your room</h2>
+                        <div className="modal-row">
+                            <input
+                                className="modal-input"
+                                type="text"
+                                value={roomName}
+                                onChange={(e) => setRoomName(e.target.value)}
+                                placeholder="Room name (optional)"
+                                onKeyDown={(e) => e.key === 'Enter' && handleCreateRoom()}
+                                autoFocus
+                            />
+                            <button className="btn-confirm" onClick={handleCreateRoom}>→</button>
+                        </div>
+                        <button className="btn-cancel" onClick={() => setModal(false)}>
+                            cancel
+                        </button>
                     </div>
                 </div>
             )}
         </div>
-    );
+    )
 }
 
 export default Home
