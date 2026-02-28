@@ -54,7 +54,7 @@ function Home() {
             return
         }
         setJoinError("");
-        navigate(`/rooms/${roomId}`);
+        navigate(`/rooms/${roomId.trim()}`);
     }
     return (
         <div className = "container">
