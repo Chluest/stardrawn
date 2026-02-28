@@ -71,7 +71,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                     await manager.broadcast(json.dumps({"type": action, "entry_id": data["entry_id"]}), room_id)
                     error_count = 0
                 else:
-                    entry = db.query(Entry).order_by(func.random()).first()
+                    entry = db.query(Entry).filter(Entry.room_id == room_id).order_by(func.random()).first()
                     if not entry:
                         await websocket.send_text(json.dumps({"error": "No entries found."}))
                         continue

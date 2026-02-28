@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from uuid import UUID
 
 class RoomCreate(BaseModel):
     room_name: str | None = None
@@ -11,7 +12,7 @@ class EntryCreate(BaseModel):
 
 class EntryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id: str
+    id: UUID
     room_id: str
     added_by: str
     value: str
