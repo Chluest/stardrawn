@@ -33,7 +33,6 @@ function Room() {
         }
     }
     function connectWebsocket(){
-        console.log("connectWebsocket called, readyState:", ws.current?.readyState)
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
             return
         }
@@ -42,7 +41,11 @@ function Room() {
             const data = JSON.parse(event.data);
             const action = data["type"];
             if (action == "add_entry"){
-                setEntries(prev => [...prev, data.entry])
+                setEntries(prev => {
+                    const exists = prev.some(e => e.id === data.entry.id)
+                    if (exists) return prev
+                    return [...prev, data.entry]
+                })
             }
             else if(action == "delete_entry"){
                 setEntries(prev => prev.filter(entry => entry.id !== data.entry_id))
@@ -80,7 +83,7 @@ function Room() {
     }
     function handlePick(){
         const message = {
-            type: "pick_random",
+            type: "pick_random"
         };
         ws.current.send(JSON.stringify(message));
     }
@@ -99,7 +102,7 @@ function Room() {
             }
         }
     }, [roomId]);
-    
+
     if (loading) {
         return (
             <div className="room-status">
@@ -162,12 +165,12 @@ function Room() {
                 onClick={handlePick}
                 disabled={entries.length === 0}
             >
-                ✦ Draw from the Stars
+                ✦ Draw from the Stars ✦
             </button>
 
             {result && (
                 <div className="result-overlay">
-                    <p className="result-label">✦ The stars have chosen</p>
+                    <p className="result-label">✦ The stars have chosen ✦</p>
                     <h2 className="result-value">{result.value}</h2>
                     <button className="btn-back" onClick={() => setResult(null)}>← Back</button>
                 </div>
