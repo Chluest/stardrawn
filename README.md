@@ -1,9 +1,12 @@
 # ✦ Stardrawn ✦
 
-A collaborative random entry picker with real-time sync. Let the stars decide.
+A collaborative random entry picker with real-time sync. Create a shared room, add entries with friends, and let the stars decide.
 
 ## Live Demo
 [stardrawn.vercel.app](https://stardrawn.vercel.app)
+
+## How It Works
+stardrawn uses a FastAPI backend with WebSockets to maintain persistent connections between clients in the same room. When a user adds, removes, or picks an entry, the change is broadcast in real time to all connected participants via WebSocket events. Room state is persisted in PostgreSQL so rooms survive reconnections and page refreshes.
 
 ## Features
 - Create a shared room and invite friends via URL
