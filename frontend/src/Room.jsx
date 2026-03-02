@@ -66,9 +66,10 @@ function Room() {
         }
     }
     function handleAdd(){
+        if (!newEntry.trim()) return
         const message = {
             type: "add_entry",
-            value: newEntry,
+            value: newEntry.trim(),
             added_by: null
         };
         ws.current.send(JSON.stringify(message));
