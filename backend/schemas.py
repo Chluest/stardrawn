@@ -14,7 +14,7 @@ class EntryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
     room_id: str
-    added_by: str
+    added_by: str | None = None
     value: str
     timestamp: datetime
 
