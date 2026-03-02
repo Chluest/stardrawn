@@ -18,7 +18,7 @@ function Room() {
     }
     async function fetchRoom(){
         try{
-            const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}`,{method: 'GET'
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/rooms/${roomId.trim()}`,{method: 'GET'
             })
             if (!response.ok){
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,7 +36,7 @@ function Room() {
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
             return
         }
-        ws.current = new WebSocket(`ws://127.0.0.1:8000/ws/${roomId}`);
+        ws.current = new WebSocket(`${import.meta.env.VITE_WS_URL}/ws/${roomId}`);
         ws.current.onmessage = (event) => {
             const data = JSON.parse(event.data);
             const action = data["type"];
@@ -130,7 +130,7 @@ function Room() {
                 </div>
             </nav>
 
-            <h1 className="room-title">{room?.room_name || "Stardrawn"}</h1>
+            <h1 className="room-title">{room?.room_name || "stardrawn"}</h1>
             <p className="room-subtitle">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
 
             {entries.length === 0 ? (

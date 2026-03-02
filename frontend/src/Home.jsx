@@ -8,7 +8,7 @@ function Home() {
     const [showModal, setModal] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [joinError, setJoinError] = useState("");
-    const url = 'http://127.0.0.1:8000/rooms';
+    const url = `${import.meta.env.VITE_API_URL}/rooms`;
     async function handleSolo(){
         try{
             const response = await fetch(url, {
