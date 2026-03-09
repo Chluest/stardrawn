@@ -42,9 +42,15 @@ def create_room(room: RoomCreate | None = None, db = Depends(get_db)):
 
 @app.get("/rooms/{room_id}", response_model = RoomResponse)
 def get_room(room_id: str, db = Depends(get_db)):
+    room_key = f"cache:room:{room_id}"
+    cached = manager.get_cache(room_key)
+    if cached:
+        return json.loads(cached)
     room = db.query(Room).filter(Room.id == room_id).first()
     if not room:
         raise HTTPException(status_code = 404, detail = "Room not found.")
+    room_data = RoomResponse.model_validate(room).model_dump_json()
+    manager.set_cache(room_key,room_data)
     return room
 
 async def redis_subscriber(id):
@@ -83,6 +89,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                     db.add(entry)
                     db.commit()
                     db.refresh(entry)
+                    manager.delete_cache(f"cache:room:{room_id}")
                     await manager.publish(json.dumps({"type": action, "entry": entry.to_dict()}),room_id)
                     error_count = 0
                 elif action == "delete_entry":
@@ -92,6 +99,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                         continue
                     db.delete(entry)
                     db.commit()
+                    manager.delete_cache(f"cache:room:{room_id}")
                     await manager.publish(json.dumps({"type": action, "entry_id": data["entry_id"]}), room_id)
                     error_count = 0
                 else:
