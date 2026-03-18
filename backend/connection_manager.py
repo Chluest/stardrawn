@@ -11,15 +11,14 @@ class ConnectionManager:
         self.redis = aioredis.from_url(
             os.getenv("REDIS_URL"),
             encoding="utf-8",
-            decode_responses=True,
-            ssl_cert_reqs=None
+            decode_responses=True
         )
 
         self.redis_sync = redis.from_url(
             os.getenv("REDIS_URL"),
             encoding="utf-8",
             decode_responses=True,
-            ssl_cert_reqs=None
+            socket_connect_timeout=5
         )
     async def connect(self, connection: WebSocket, id: str):
         await connection.accept()
